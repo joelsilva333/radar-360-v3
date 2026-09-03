@@ -1,26 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-google-sans: "Google Sans", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --color-primary: #1850f5;
+  --color-primary-2: #0b1730;
+  --color-primary-3: #050a14;
+  --color-cinza: #2e2e2e;
+  --color-cinza-2: #70808f;
+  --color-cinza-3: #9ca3b0;
+  --color-cinza-4: #8f94a0;
+  --color-line: #e5e7eb;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.btn-primary {
+  @apply bg-primary text-white font-inter text-center flex justify-center items-center gap-2 font-semibold min-w-37.5 text-sm py-3 rounded-lg hover:bg-primary/70 transition-all duration-300 cursor-pointer;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.btn-secondary {
+  @apply bg-white hover:bg-gray-100 border border-line flex items-center justify-center gap-2 min-w-37.5 text-sm font-normal py-3 rounded-lg transition-all duration-300 cursor-pointer;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.input-primary {
+  @apply w-full bg-transparent outline-none text-black placeholder:text-cinza-3 font-inter text-sm font-normal;
 }
