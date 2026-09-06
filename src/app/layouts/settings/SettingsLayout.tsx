@@ -18,7 +18,7 @@ export default function SettingsLayout({
     <div className="flex flex-col h-screen justify-center items-center">
       {" "}
       <SettingsHeader />{" "}
-      <main className="w-full h-full max-w-360.5 p-4"> {children} </main>{" "}
+      <main className="w-full h-[80vh] overflow-y-auto"> {children} </main>{" "}
       <SettingsFooter
         onNextClick={onNextClick}
         isNextDisabled={isNextDisabled}

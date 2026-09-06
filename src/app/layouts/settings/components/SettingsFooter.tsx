@@ -40,7 +40,7 @@ export default function SettingsFooter({
   };
 
   return (
-    <footer className="bg-white border-t shadow-black/5 shadow-sm border-line w-full py-1 px-60 flex gap-2 h-20 items-center justify-between">
+    <footer className="bg-white border-t shadow-black/5 shadow-sm z-50 border-line w-full py-1 px-60 flex gap-2 h-20 items-center justify-between">
       <button
         type="button"
         onClick={handleBackClick}
