@@ -13,7 +13,6 @@ export default function SuccessModal({ onGoToDashboard }: SuccessModalProps) {
 <path d="M18.7725 33.2076L24.3857 38.8208L41.2253 21.1793" stroke="white" stroke-width="1.41509" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 
-
         <div className="flex flex-col items-center justify-center gap-1.5">
           <h1 className="text-xl font-medium text-cinza font-google-sans">
             Configuração concluída com sucesso!
