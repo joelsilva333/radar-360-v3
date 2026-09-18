@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import SetupLayout from "@/app/layouts/setup/SetupLayout";
 import RiskAssessmentMatrix, {
   MatrixSize,
 } from "./components/RiskAssessmentMatrix";
 
 export default function SetupPage() {
+  const router = useRouter();
   const [selectedMatrix, setSelectedMatrix] = useState<MatrixSize | null>(
     "3x3",
   );
@@ -15,6 +17,7 @@ export default function SetupPage() {
     if (!selectedMatrix) return;
 
     console.log("Matriz selecionada:", selectedMatrix);
+    router.push("/setup/final-step");
   };
 
   return (

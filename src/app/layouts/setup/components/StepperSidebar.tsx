@@ -17,6 +17,7 @@ const DEFAULT_STEPS: Step[] = [
   { id: 3, label: "Dados da Frameworks" },
   { id: 4, label: "Dados da Taxonomia" },
   { id: 5, label: "Dados da Matriz" },
+  { id: 6, label: "Resumo e Conclusão" },
 ];
 
 export default function StepperSidebar({

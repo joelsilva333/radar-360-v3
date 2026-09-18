@@ -208,7 +208,7 @@ export default function ConfirmEnterprise() {
         isNextDisabled={isNextDisabled}
         missingMessage={getMissingMessage()}
         nextLabel="Confirmar informações">
-        <div className="w-full space-y-6 font-sans text-gray-900">
+        <div className="w-full space-y-6 font-sans text-gray-900 max-w-360.5 mx-auto">
           <header className="mt-12.5 mb-6">
             <h1 className="text-2xl font-medium tracking-tight text-cinza">
               Confirme os dados da sua empresa

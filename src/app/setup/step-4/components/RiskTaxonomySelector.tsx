@@ -68,7 +68,7 @@ export default function RiskTaxonomySelector({
               key={option.id}
               type="button"
               onClick={() => handleSelect(option.id)}
-              className={`w-full text-left px-3 py-8 rounded-2xl border transition-all duration-150 flex flex-col gap-3 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+              className={`w-full text-left px-3 py-8 overflow-y-auto rounded-2xl border transition-all duration-150 flex flex-col gap-3 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                 isSelected
                   ? "border-blue-500 bg-blue-50/20 shadow-sm"
                   : "border-slate-200 bg-white hover:border-slate-300"
