@@ -68,12 +68,12 @@ const MENU_ITEMS: MenuGroup[] = [
     ],
   },
   {
-    title: "Gestão",
+    title: "Administração",
     items: [
       {
         label: "Usuários",
         icon: "/icons/sidebar/usuarios.svg",
-        link: "/usuarios",
+        link: "/dashboard/usuarios",
       },
     ],
   },

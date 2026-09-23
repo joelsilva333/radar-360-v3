@@ -7,15 +7,15 @@
               <path
                 d="M3.15151 13.591L2.5 17.5L6.40905 16.8485C7.08787 16.7354 7.71438 16.413 8.20099 15.9263L17.0165 7.11073C17.6612 6.46601 17.6612 5.42075 17.0164 4.77605L15.2239 2.98353C14.5792 2.33881 13.5338 2.33882 12.8891 2.98356L4.07368 11.7992C3.58706 12.2857 3.26464 12.9122 3.15151 13.591Z"
                 stroke="#2E2E2E"
-                stroke-width="1.25"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M11.667 5L15.0003 8.33333"
                 stroke="#2E2E2E"
-                stroke-width="1.25"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>

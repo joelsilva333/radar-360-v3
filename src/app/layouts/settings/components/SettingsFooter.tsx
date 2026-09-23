@@ -6,12 +6,14 @@ import Loading from "@/app/ui/Loading";
 
 export default function SettingsFooter({
   onNextClick,
+  onDisabledClick,
   isNextDisabled,
   missingMessage,
   loading = false,
   nextLabel = "Continuar",
 }: {
   onNextClick: () => void | Promise<void>;
+  onDisabledClick?: () => void;
   isNextDisabled: boolean;
   missingMessage?: string;
   loading?: boolean;
@@ -29,6 +31,8 @@ export default function SettingsFooter({
     if (loading) return;
 
     if (isNextDisabled) {
+      onDisabledClick?.();
+
       toast.warning(
         missingMessage ||
           "Preencha todos os campos obrigatórios antes de continuar.",
@@ -40,8 +44,9 @@ export default function SettingsFooter({
   };
 
   return (
-    <footer className="bg-white border-t shadow-black/5 shadow-sm z-50 border-line w-full py-1 px-60 flex gap-2 h-20 items-center justify-between">
-      <button
+    <footer className="bg-white border-t shadow-black/5 shadow-sm z-50 border-line w-full py-1 px-20 flex gap-2 h-20 items-center justify-center">
+      <div className="flex items-center justify-between  w-full max-w-360.5 ">
+        <button
         type="button"
         onClick={handleBackClick}
         disabled={loading}
@@ -74,8 +79,11 @@ export default function SettingsFooter({
 
       <button
         type="button"
-        className="btn-primary w-fit min-w-28 px-4 flex items-center justify-center disabled:cursor-not-allowed disabled:bg-primary/50"
-        disabled={isNextDisabled || loading}
+        className="btn-primary w-fit min-w-28 px-4 flex items-center justify-center aria-disabled:cursor-not-allowed aria-disabled:bg-primary/50"
+        /*
+         * Não usamos `disabled`: o browser bloquearia o clique e o aviso
+         * do que falta preencher nunca seria mostrado.
+         */
         aria-disabled={isNextDisabled || loading}
         onClick={handleNextClick}>
         {loading ? (
@@ -95,21 +103,22 @@ export default function SettingsFooter({
               <path
                 d="M15.4167 10.0016H4.16666"
                 stroke="white"
-                stroke-width="1.25"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
               <path
                 d="M10.8334 15.0016C10.8334 15.0016 15.8334 11.3191 15.8334 10.0015C15.8334 8.68396 10.8333 5.00159 10.8333 5.00159"
                 stroke="white"
-                stroke-width="1.25"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </>
         )}
       </button>
+      </div>
     </footer>
   );
 }

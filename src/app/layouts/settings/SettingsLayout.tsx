@@ -4,12 +4,14 @@ import SettingsHeader from "./components/SettingsHeader";
 export default function SettingsLayout({
   children,
   onNextClick,
+  onDisabledClick,
   isNextDisabled,
   missingMessage,
   nextLabel,
 }: {
   children: React.ReactNode;
   onNextClick: () => void;
+  onDisabledClick?: () => void;
   isNextDisabled: boolean;
   missingMessage?: string;
   nextLabel?: string;
@@ -18,9 +20,13 @@ export default function SettingsLayout({
     <div className="flex flex-col h-screen justify-center items-center">
       {" "}
       <SettingsHeader />{" "}
-      <main className="w-full h-[80vh] overflow-y-auto"> {children} </main>{" "}
+      <main className="w-full h-[80vh] overflow-y-auto ">
+        {" "}
+        {children}{" "}
+      </main>{" "}
       <SettingsFooter
         onNextClick={onNextClick}
+        onDisabledClick={onDisabledClick}
         isNextDisabled={isNextDisabled}
         missingMessage={missingMessage}
         nextLabel={nextLabel}

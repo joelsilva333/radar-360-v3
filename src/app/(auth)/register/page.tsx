@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import FormInput from "../../ui/FormInput";
 import { Eye, EyeOff } from "lucide-react";
@@ -8,6 +8,7 @@ import Loading from "@/app/ui/Loading";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRegistration } from "@/core/hooks/useRegistration";
+import { useStoredStep1Data } from "@/core/hooks/useRegistrationStoredData";
 import { RegisterStep1Data } from "@/core/types/register";
 import AuthFormLayout from "@/app/layouts/auth/AuthFormLayout";
 
@@ -15,18 +16,33 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { saveStep1Data, getStep1Data } = useRegistration();
+  const { saveStep1Data } = useRegistration();
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm<RegisterStep1Data>({
     mode: "onBlur",
-    defaultValues: typeof window !== "undefined" ? getStep1Data() : {},
+    defaultValues: {},
   });
+
+  /*
+   * O localStorage não existe no servidor. Lê-lo aqui durante o render faria
+   * o servidor renderizar os campos vazios e o cliente os campos preenchidos,
+   * originando hydration mismatch. O valor só chega depois da hidratação,
+   * pelo que repomos o formulário nessa altura.
+   */
+  const [savedStep1Data] = useStoredStep1Data();
+
+  useEffect(() => {
+    if (Object.keys(savedStep1Data).length > 0) {
+      reset(savedStep1Data);
+    }
+  }, [savedStep1Data, reset]);
 
   const password = useWatch({
     control,

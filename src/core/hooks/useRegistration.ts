@@ -1,91 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   RegisterStep1Data,
   RegisterNifData,
   CompleteRegistrationData,
 } from "../types/register";
 import { registerCompany } from "../api/auth";
-
-const STORAGE_KEYS = {
-  STEP_1: "register_data",
-  STEP_2: "register_nif_data",
-  COMPLETE: "complete_register_data",
-};
+import {
+  REGISTRATION_STORAGE_KEYS,
+  readStoredData,
+  removeStoredData,
+  writeStoredData,
+} from "../storage/registrationStorage";
 
 export function useRegistration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const getStep1Data = (): Partial<RegisterStep1Data> => {
-    if (typeof window === "undefined") return {};
-    const saved = localStorage.getItem(STORAGE_KEYS.STEP_1);
-    return saved ? JSON.parse(saved) : {};
-  };
+  /**
+   * Os leitores são estáveis (useCallback) para poderem ser usados como
+   * dependência de efeitos sem provocar ciclos de render.
+   *
+   * Atenção: nunca chamar durante o render. O localStorage não existe no
+   * servidor, e ler aqui dentro um `useState` inicial gera hydration mismatch.
+   */
+  const getStep1Data = useCallback(
+    (): Partial<RegisterStep1Data> =>
+      readStoredData<RegisterStep1Data>(REGISTRATION_STORAGE_KEYS.STEP_1),
+    [],
+  );
 
-  const getNifData = (): Partial<RegisterNifData> => {
-    if (typeof window === "undefined") return {};
-    const saved = localStorage.getItem(STORAGE_KEYS.STEP_2);
-    return saved ? JSON.parse(saved) : {};
-  };
+  const getNifData = useCallback(
+    (): Partial<RegisterNifData> =>
+      readStoredData<RegisterNifData>(REGISTRATION_STORAGE_KEYS.STEP_2),
+    [],
+  );
 
   // --- MÉTODOS DE GRAVAÇÃO (Salvam no localStorage) ---
-  const saveStep1Data = (data: RegisterStep1Data) => {
-    localStorage.setItem(STORAGE_KEYS.STEP_1, JSON.stringify(data));
-  };
 
-  const saveNifData = (data: RegisterNifData) => {
-    localStorage.setItem(STORAGE_KEYS.STEP_2, JSON.stringify(data));
-  };
+  const saveStep1Data = useCallback((data: RegisterStep1Data) => {
+    writeStoredData(REGISTRATION_STORAGE_KEYS.STEP_1, data);
+  }, []);
+
+  const saveNifData = useCallback((data: RegisterNifData) => {
+    writeStoredData(REGISTRATION_STORAGE_KEYS.STEP_2, data);
+  }, []);
+
+  const clearRegistrationData = useCallback(() => {
+    removeStoredData([
+      REGISTRATION_STORAGE_KEYS.STEP_1,
+      REGISTRATION_STORAGE_KEYS.STEP_2,
+      REGISTRATION_STORAGE_KEYS.COMPLETE,
+    ]);
+  }, []);
 
   // --- ENVIO FINAL PARA O BACKEND ---
-  const submitRegistration = async (currentNifData: RegisterNifData) => {
-    setLoading(true);
-    setError(null);
 
-    try {
-      // 1. Salva a etapa atual no localStorage
-      saveNifData(currentNifData);
+  const submitRegistration = useCallback(
+    async (currentNifData: RegisterNifData) => {
+      setLoading(true);
+      setError(null);
 
-      // 2. Consolida todos os dados do localStorage
-      const step1 = getStep1Data();
-      const completePayload: CompleteRegistrationData = {
-        ...step1,
-        ...currentNifData,
-      } as CompleteRegistrationData;
+      try {
+        // 1. Salva a etapa atual no localStorage
+        saveNifData(currentNifData);
 
-      localStorage.setItem(
-        STORAGE_KEYS.COMPLETE,
-        JSON.stringify(completePayload),
-      );
+        // 2. Consolida todos os dados do localStorage
+        const step1 = getStep1Data();
+        const completePayload: CompleteRegistrationData = {
+          ...step1,
+          ...currentNifData,
+        } as CompleteRegistrationData;
 
-      // 3. Executa a chamada no /core
-      await registerCompany(completePayload);
+        writeStoredData(REGISTRATION_STORAGE_KEYS.COMPLETE, completePayload);
 
-      clearRegistrationData();
+        // 3. Executa a chamada no /core
+        await registerCompany(completePayload);
 
-      setLoading(false);
-      return { success: true };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setLoading(false);
-      setError(err.message || "Falha no envio.");
-      return { success: false, error: err.message };
-    }
-  };
+        clearRegistrationData();
 
-  const clearRegistrationData = () => {
-    localStorage.removeItem(STORAGE_KEYS.STEP_1);
-    localStorage.removeItem(STORAGE_KEYS.STEP_2);
-    localStorage.removeItem(STORAGE_KEYS.COMPLETE);
-  };
+        setLoading(false);
+        return { success: true as const };
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Falha no envio.";
+
+        setLoading(false);
+        setError(message);
+        return { success: false as const, error: message };
+      }
+    },
+    [clearRegistrationData, getStep1Data, saveNifData],
+  );
 
   return {
     getStep1Data,
     getNifData,
     saveStep1Data,
     saveNifData,
+    clearRegistrationData,
     submitRegistration,
     loading,
     error,

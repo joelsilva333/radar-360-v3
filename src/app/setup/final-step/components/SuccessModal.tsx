@@ -8,10 +8,26 @@ export default function SuccessModal({ onGoToDashboard }: SuccessModalProps) {
   return (
     <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 font-inter">
       <div className="relative flex w-187 flex-col rounded-lg bg-white p-6 shadow-lg items-center justify-center gap-4 text-center">
-       <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="60" height="60" rx="30" fill="#0E8D5F"/>
-<path d="M18.7725 33.2076L24.3857 38.8208L41.2253 21.1793" stroke="white" stroke-width="1.41509" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+        <svg
+          width="60"
+          height="60"
+          viewBox="0 0 60 60"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <rect
+            width="60"
+            height="60"
+            rx="30"
+            fill="#0E8D5F"
+          />
+          <path
+            d="M18.7725 33.2076L24.3857 38.8208L41.2253 21.1793"
+            stroke="white"
+            strokeWidth="1.41509"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
 
         <div className="flex flex-col items-center justify-center gap-1.5">
           <h1 className="text-xl font-medium text-cinza font-google-sans">

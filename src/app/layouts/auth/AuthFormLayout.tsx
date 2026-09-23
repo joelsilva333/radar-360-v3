@@ -5,7 +5,7 @@ export default function AuthFormLayout({
 }: {
   children: React.ReactNode;
   title: string;
-  description?: string;
+  description?: React.ReactNode;
 }) {
   return (
     <div className="flex w-115 flex-col gap-6  overflow-y-auto pb-5">

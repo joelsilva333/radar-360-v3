@@ -67,7 +67,7 @@ export default function Home({ config }: HomeClientProps) {
   const handleStartSetup = () => {
     setShowSetupModal(false);
 
-    router.push("/setup");
+    router.push("/setup/step-1");
   };
 
   return (
@@ -85,7 +85,10 @@ export default function Home({ config }: HomeClientProps) {
             subtitle="Vamos começar a configurar o seu ambiente para que os dados comecem a aparecer aqui."
           />
 
-          <button className="btn-primary px-4">
+          <button
+            type="button"
+            onClick={handleStartSetup}
+            className="btn-primary px-4">
             <Image
               src="/icons/config.svg"
               alt="Iniciar configuração"

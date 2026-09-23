@@ -106,30 +106,30 @@ export default function RiskAssessmentMatrix({
                   <path
                     d="M3.24268 16.7573C2.08331 15.5978 2.08331 13.7318 2.08331 9.99992C2.08331 6.26797 2.08331 4.40199 3.24268 3.24262C4.40205 2.08325 6.26803 2.08325 9.99998 2.08325C13.7319 2.08325 15.5979 2.08325 16.7573 3.24262C17.9166 4.40199 17.9166 6.26797 17.9166 9.99992C17.9166 13.7318 17.9166 15.5978 16.7573 16.7573C15.5979 17.9166 13.7319 17.9166 9.99998 17.9166C6.26803 17.9166 4.40205 17.9166 3.24268 16.7573Z"
                     stroke="#1850F5"
-                    stroke-width="1.25"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M2.5 7.5H17.5"
                     stroke="#1850F5"
-                    stroke-width="1.25"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M2.5 12.5H17.5"
                     stroke="#1850F5"
-                    stroke-width="1.25"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M10 7.5V12.5"
                     stroke="#1850F5"
-                    stroke-width="1.25"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -151,14 +151,14 @@ export default function RiskAssessmentMatrix({
                   <path
                     d="M18.3334 10.0001C18.3334 5.39771 14.6024 1.66675 10 1.66675C5.39765 1.66675 1.66669 5.39771 1.66669 10.0001C1.66669 14.6024 5.39765 18.3334 10 18.3334C14.6024 18.3334 18.3334 14.6024 18.3334 10.0001Z"
                     stroke="#1850F5"
-                    stroke-width="1.25"
+                    strokeWidth="1.25"
                   />
                   <path
                     d="M6.66669 10.4167L8.75002 12.5L13.3334 7.5"
                     stroke="#1850F5"
-                    stroke-width="1.25"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               )}
@@ -201,7 +201,7 @@ export default function RiskAssessmentMatrix({
 
           <p className="text-lg uppercase text-cinza-2">Impacto</p>
         </div>
-        
+
         <div
           className="grid gap-2 mb-1"
           style={{ gridTemplateColumns: `repeat(${dim}, minmax(0, 1fr))` }}>

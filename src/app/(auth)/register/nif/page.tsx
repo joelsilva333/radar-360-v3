@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FormInput from "../../../ui/FormInput";
 import AuthFormLayout from "../../../layouts/auth/AuthFormLayout";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -8,6 +8,7 @@ import Loading from "@/app/ui/Loading";
 import { useRouter } from "next/navigation";
 import Processor from "./components/Processor";
 import { useRegistration } from "@/core/hooks/useRegistration";
+import { useStoredNifData } from "@/core/hooks/useRegistrationStoredData";
 
 interface FormFields {
   nif: string;
@@ -21,26 +22,41 @@ export default function RegisterNIF() {
   const nifTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
 
-  const { getNifData, saveNifData } = useRegistration();
+  const { saveNifData } = useRegistration();
 
-  const [denomination, setDenomination] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      const saved = getNifData();
-      return saved.denomination || "";
-    }
+  /*
+   * `denominationInput` é a denominação obtida nesta sessão. Enquanto for
+   * nula mostramos a que já estava guardada, que só chega depois da
+   * hidratação.
+   */
+  const [denominationInput, setDenominationInput] = useState<string | null>(
+    null,
+  );
 
-    return "";
-  });
+  const [savedNifData] = useStoredNifData();
+
+  const denomination = denominationInput ?? savedNifData.denomination ?? "";
 
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      nif: typeof window !== "undefined" ? getNifData().nif || "" : "",
+      nif: "",
     },
   });
+
+  /*
+   * O localStorage não existe no servidor. Preencher o formulário com os
+   * dados guardados durante o render faria o servidor renderizar o campo
+   * vazio e o cliente o campo preenchido, originando hydration mismatch.
+   * O valor guardado só é reposto depois da hidratação.
+   */
+  useEffect(() => {
+    reset({ nif: savedNifData.nif || "" });
+  }, [savedNifData, reset]);
 
   const handleNifChange = (value: string) => {
     const cleanNif = value.trim();
@@ -49,7 +65,7 @@ export default function RegisterNIF() {
       clearTimeout(nifTimeout.current);
     }
 
-    setDenomination("");
+    setDenominationInput("");
     setNifError("");
 
     if (!cleanNif || cleanNif.length < 6) {
@@ -61,7 +77,7 @@ export default function RegisterNIF() {
 
     nifTimeout.current = setTimeout(() => {
       // Temporário: simulação da API da AGT
-      setDenomination("ÁUREO INÁCIO, SU");
+      setDenominationInput("ÁUREO INÁCIO, SU");
       setCheckingNif(false);
     }, 1200);
   };

@@ -276,30 +276,30 @@ export default function IndustrySelector({
                         <path
                           d="M8.5 23.5001C9.75 21.0001 10.5833 17.6667 10.5833 12.6667H16.4167C16.4167 17.6667 17.25 21.0001 18.5 23.5001"
                           stroke="#1850F5"
-                          stroke-width="1.25"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M16 9.55412C16.9753 8.18996 18.2232 8.18996 19.1985 9.55412C19.7866 10.3912 20.5468 10.3602 21.1492 9.52313C22.1102 8.15896 23.358 8.15896 24.3333 9.52313"
                           stroke="#1850F5"
-                          stroke-width="1.25"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M16.708 16.0593H19.6697C19.787 17.5911 19.6583 20.2636 22.4126 23.3499"
                           stroke="#1850F5"
-                          stroke-width="1.25"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
                           d="M7.66663 23.5H23.5"
                           stroke="#1850F5"
-                          stroke-width="1.25"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeWidth="1.25"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                       </svg>
 

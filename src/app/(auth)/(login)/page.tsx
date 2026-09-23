@@ -94,7 +94,7 @@ export default function Login() {
         )}
 
         <Link
-          href={"#"}
+          href={"/forgot-password"}
           className="text-primary w-full text-right text-sm font-normal hover:opacity-70 transition-opacity">
           Esqueceu sua senha?
         </Link>
