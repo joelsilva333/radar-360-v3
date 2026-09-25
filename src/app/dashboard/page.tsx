@@ -7,12 +7,14 @@ import WithoutActivity from "./components/WithoutActivity";
 import WelcomeSetupModal from "./components/WelcomeSetupModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useHydrated } from "@/core/hooks/useHydrated";
+import { useSetupData } from "@/core/hooks/useSetupData";
+import {
+  getFirstIncompleteSetupStep,
+  SETUP_STEP_PATHS,
+} from "@/core/setup/steps";
 
-interface HomeClientProps {
-  config: boolean;
-}
-
-export default function Home({ config }: HomeClientProps) {
+export default function Home() {
   const dashcards = [
     {
       title: "Assessments",
@@ -58,16 +60,34 @@ export default function Home({ config }: HomeClientProps) {
 
   const router = useRouter();
 
-  const [showSetupModal, setShowSetupModal] = useState<boolean>(!config);
+  const hydrated = useHydrated();
+
+  const [setupData] = useSetupData();
+
+  const [modalDismissed, setModalDismissed] = useState(false);
+
+  /*
+   * Só depois da hidratação sabemos se o setup está concluído (vem do
+   * localStorage). Antes disso não mostramos nada, para não piscar o modal
+   * a quem já concluiu.
+   */
+  const isSetupPending = hydrated && !setupData.completedAt;
+
+  const hasStartedSetup = getFirstIncompleteSetupStep(setupData) > 1;
+
+  const showSetupModal = isSetupPending && !modalDismissed;
 
   const handleCloseSetupModal = () => {
-    setShowSetupModal(false);
+    setModalDismissed(true);
   };
 
+  /*
+   * Retoma no primeiro passo por preencher.
+   */
   const handleStartSetup = () => {
-    setShowSetupModal(false);
+    setModalDismissed(true);
 
-    router.push("/setup/step-1");
+    router.push(SETUP_STEP_PATHS[getFirstIncompleteSetupStep(setupData)]);
   };
 
   return (
@@ -82,21 +102,29 @@ export default function Home({ config }: HomeClientProps) {
         <div className="flex justify-between items-center w-full">
           <Title
             title="Bem-vindo(a) Barba Azul"
-            subtitle="Vamos começar a configurar o seu ambiente para que os dados comecem a aparecer aqui."
+            subtitle={
+              setupData.completedAt
+                ? "Acompanhe aqui a atividade de governança, risco e compliance da sua organização."
+                : "Vamos começar a configurar o seu ambiente para que os dados comecem a aparecer aqui."
+            }
           />
 
-          <button
-            type="button"
-            onClick={handleStartSetup}
-            className="btn-primary px-4">
-            <Image
-              src="/icons/config.svg"
-              alt="Iniciar configuração"
-              width={20}
-              height={20}
-            />
-            Iniciar configuração
-          </button>
+          {isSetupPending && (
+            <button
+              type="button"
+              onClick={handleStartSetup}
+              className="btn-primary px-4">
+              <Image
+                src="/icons/config.svg"
+                alt=""
+                width={20}
+                height={20}
+              />
+              {hasStartedSetup
+                ? "Continuar configuração"
+                : "Iniciar configuração"}
+            </button>
+          )}
         </div>
 
         <ul className="grid grid-cols-4 gap-6">

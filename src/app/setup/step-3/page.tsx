@@ -1,32 +1,34 @@
 "use client";
 
-import { useState } from "react";
 import SetupLayout from "@/app/layouts/setup/SetupLayout";
+import { useSetupData } from "@/core/hooks/useSetupData";
+import { isSetupStepComplete, SETUP_STEP_PATHS } from "@/core/setup/steps";
+import { CustomFramework } from "@/core/types/setup";
+import { useRouter } from "next/navigation";
 import FrameworkSelector from "./components/FrameworkSelector";
 
 export default function SetupPage() {
-  const [selectedFrameworkIds, setSelectedFrameworkIds] = useState<string[]>(
-    [],
-  );
+  const router = useRouter();
 
-  const handleNext = () => {
-    console.log("Frameworks selecionados IDs:", selectedFrameworkIds);
-  };
+  const [setupData, updateSetup] = useSetupData();
 
-  const handleAddCustomFramework = () => {
-    console.log("Abrir modal/fluxo para adicionar framework personalizado");
+  const customFrameworks = setupData.customFrameworks ?? [];
+
+  const handleAddCustomFramework = (framework: CustomFramework) => {
+    updateSetup({ customFrameworks: [framework, ...customFrameworks] });
   };
 
   return (
     <SetupLayout
       currentStep={3}
-      onNextClick={handleNext}
-      isNextDisabled={selectedFrameworkIds.length === 0}
+      onNextClick={() => router.push(SETUP_STEP_PATHS[4])}
+      isNextDisabled={!isSetupStepComplete(3, setupData)}
       nextLabel="Continuar"
       missingMessage="Selecione pelo menos um framework antes de continuar.">
       <FrameworkSelector
-        selectedIds={selectedFrameworkIds}
-        onSelect={(ids) => setSelectedFrameworkIds(ids)}
+        selectedIds={setupData.frameworkIds ?? []}
+        onSelect={(frameworkIds) => updateSetup({ frameworkIds })}
+        customFrameworks={customFrameworks}
         onAddCustomFramework={handleAddCustomFramework}
       />
     </SetupLayout>

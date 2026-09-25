@@ -1,5 +1,16 @@
 "use client";
 
+import { useStoredStep1Data } from "@/core/hooks/useRegistrationStoredData";
+import { SetupData } from "@/core/types/setup";
+import { INDUSTRIES_DATA } from "../../step-1/components/IndustrySelector";
+import { JURISDICTIONS_DATA } from "../../step-2/components/OrganizationSelector";
+import { INITIAL_FRAMEWORKS_DATA } from "../../step-3/components/FrameworkSelector";
+import { TAXONOMY_OPTIONS } from "../../step-4/components/RiskTaxonomySelector";
+import {
+  getCellColor,
+  MATRIX_LABELS,
+} from "../../step-5/components/RiskAssessmentMatrix";
+
 interface SummaryCardProps {
   icon: React.ReactNode;
   label: string;
@@ -39,15 +50,46 @@ function SummaryCard({ icon, label, value, description, chips }: SummaryCardProp
   );
 }
 
-const MATRIX_COLUMNS = ["Baixa", "Média", "Alta"];
+/** "RECURSOS NATURAIS E ENERGIA" → "Recursos naturais e energia" */
+const toSentenceCase = (text: string) =>
+  text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 
-const MATRIX_ROWS: { label: string; colors: string[] }[] = [
-  { label: "Alto", colors: ["bg-amber-500", "bg-red-600", "bg-red-600"] },
-  { label: "Média", colors: ["bg-amber-500", "bg-yellow-400", "bg-red-600"] },
-  { label: "Baixa", colors: ["bg-emerald-600", "bg-amber-500", "bg-amber-500"] },
-];
+const TAXONOMY_DESCRIPTIONS: Record<string, string> = {
+  sim: "Importar, avaliar e submeter a validação no Governance Hub",
+  "em-construcao": "Definição e aprovação no Governance Hub",
+  nao: "Construção guiada a partir do contexto da organização",
+};
 
-export default function SetupSummary() {
+export default function SetupSummary({
+  setupData,
+}: {
+  setupData: Partial<SetupData>;
+}) {
+  const [representative] = useStoredStep1Data();
+
+  const industry = INDUSTRIES_DATA.find(
+    (item) => item.id === setupData.industryId,
+  );
+
+  const jurisdictions = JURISDICTIONS_DATA.filter((item) =>
+    setupData.jurisdictionIds?.includes(item.id),
+  ).map((item) => item.name);
+
+  const frameworks = [
+    ...(setupData.customFrameworks ?? []),
+    ...INITIAL_FRAMEWORKS_DATA,
+  ]
+    .filter((item) => setupData.frameworkIds?.includes(item.id))
+    .map((item) => item.name);
+
+  const taxonomy = TAXONOMY_OPTIONS.find(
+    (item) => item.id === setupData.taxonomy,
+  );
+
+  const matrixSize = setupData.matrix ?? "3x3";
+  const matrixDimension = Number(matrixSize.charAt(0));
+  const matrixLabels = MATRIX_LABELS[matrixSize];
+
   return (
     <div className="w-full space-y-6 text-slate-800 font-inter">
       <div className="space-y-2">
@@ -63,8 +105,8 @@ export default function SetupSummary() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <SummaryCard
           label="Industria Principal"
-          value="Petróleo e Gás"
-          description="Recursos Naturais e Energia"
+          value={industry?.name ?? "—"}
+          description={industry ? toSentenceCase(industry.category) : undefined}
           icon={
             <svg
               width="20"
@@ -106,15 +148,7 @@ export default function SetupSummary() {
 
         <SummaryCard
           label="Jurisdições Ativas"
-          chips={[
-            "Angola",
-            "Alemanha",
-            "Portugal",
-            "França",
-            "Reino Unido",
-            "Brasil",
-            "Cabo Verde",
-          ]}
+          chips={jurisdictions}
           icon={
             <svg
               width="20"
@@ -145,14 +179,7 @@ export default function SetupSummary() {
 
         <SummaryCard
           label="Frameworks"
-          chips={[
-            "ISO 31000",
-            "ISO 9001",
-            "RGPD",
-            "ISO 27001",
-            "ISO 45001",
-            "ISO 50001",
-          ]}
+          chips={frameworks}
           icon={
             <svg
               width="20"
@@ -229,8 +256,12 @@ export default function SetupSummary() {
 
         <SummaryCard
           label="Taxonomia de Risco"
-          value="Em construção (Guiado)"
-          description="Definição e aprovação no Governance Hub"
+          value={taxonomy?.title ?? "—"}
+          description={
+            setupData.taxonomy
+              ? TAXONOMY_DESCRIPTIONS[setupData.taxonomy]
+              : undefined
+          }
           icon={
             <svg
               width="20"
@@ -265,8 +296,8 @@ export default function SetupSummary() {
 
         <SummaryCard
           label="Responsável"
-          value="Joshua Michael"
-          description="Chief Risk Officer"
+          value={representative.fullname || "—"}
+          description={representative.role}
           icon={
             <svg
               width="20"
@@ -293,8 +324,8 @@ export default function SetupSummary() {
 
         <SummaryCard
           label="Matriz de Avaliação"
-          value="3x3"
-          description="9 níveis"
+          value={matrixSize}
+          description={`${matrixDimension * matrixDimension} níveis`}
           icon={
             <svg
               width="20"
@@ -338,10 +369,12 @@ export default function SetupSummary() {
       <div className="border border-line rounded-xl p-5 bg-white">
         <div
           className="grid gap-2 mb-2 pl-16"
-          style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
-          {MATRIX_COLUMNS.map((label) => (
+          style={{
+            gridTemplateColumns: `repeat(${matrixDimension}, minmax(0, 1fr))`,
+          }}>
+          {matrixLabels.impact.map((label, index) => (
             <div
-              key={label}
+              key={index}
               className="text-center text-xs font-medium text-slate-500">
               {label}
             </div>
@@ -349,21 +382,27 @@ export default function SetupSummary() {
         </div>
 
         <div className="flex flex-col gap-2">
-          {MATRIX_ROWS.map((row) => (
+          {matrixLabels.probability.map((label, rowIndex) => (
             <div
-              key={row.label}
+              key={rowIndex}
               className="flex items-center gap-3">
               <div className="w-13 text-right text-xs font-medium text-slate-500 shrink-0">
-                {row.label}
+                {label}
               </div>
 
               <div
                 className="grid gap-2 flex-1"
-                style={{ gridTemplateColumns: "repeat(3, minmax(0, 1fr))" }}>
-                {row.colors.map((color, index) => (
+                style={{
+                  gridTemplateColumns: `repeat(${matrixDimension}, minmax(0, 1fr))`,
+                }}>
+                {Array.from({ length: matrixDimension }, (_, colIndex) => (
                   <div
-                    key={index}
-                    className={`h-12 rounded-lg ${color}`}
+                    key={colIndex}
+                    className={`h-12 rounded-lg ${getCellColor(
+                      rowIndex,
+                      colIndex,
+                      matrixDimension,
+                    )}`}
                   />
                 ))}
               </div>

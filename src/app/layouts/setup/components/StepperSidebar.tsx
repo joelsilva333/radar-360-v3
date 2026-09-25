@@ -8,6 +8,11 @@ export interface Step {
 interface StepperSidebarProps {
   steps?: Step[];
   currentStep: number;
+  /**
+   * Passo mais avançado a que o utilizador pode ir (o primeiro por
+   * preencher). Os passos até aqui ficam clicáveis.
+   */
+  maxReachableStep?: number;
   onSelectStep?: (stepId: number) => void;
 }
 
@@ -23,6 +28,7 @@ const DEFAULT_STEPS: Step[] = [
 export default function StepperSidebar({
   steps = DEFAULT_STEPS,
   currentStep,
+  maxReachableStep = currentStep,
   onSelectStep,
 }: StepperSidebarProps) {
   return (
@@ -42,6 +48,8 @@ export default function StepperSidebar({
             const isCompleted = step.id < currentStep;
             const isCurrent = step.id === currentStep;
             const isLast = index === steps.length - 1;
+            const isReachable =
+              !isCurrent && step.id <= Math.max(maxReachableStep, currentStep);
 
             return (
               <div
@@ -56,10 +64,11 @@ export default function StepperSidebar({
 
                 <button
                   type="button"
-                  onClick={() => isCompleted && onSelectStep?.(step.id)}
-                  disabled={!isCompleted && !isCurrent}
+                  onClick={() => isReachable && onSelectStep?.(step.id)}
+                  disabled={!isReachable && !isCurrent}
+                  aria-current={isCurrent ? "step" : undefined}
                   className={`relative z-10 flex gap-4 items-center p-2  ${
-                    isCompleted ? "cursor-pointer" : "cursor-default"
+                    isReachable ? "cursor-pointer" : "cursor-default"
                   }`}>
                   <div
                     className={`flex min-w-15 min-h-15 items-center justify-center  rounded-full border transition-all duration-200 ${

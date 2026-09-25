@@ -1,5 +1,6 @@
 "use client";
 
+import { CustomFramework } from "@/core/types/setup";
 import { useState, useMemo } from "react";
 import AddFrameworkModal from "./AddFrameworkModal";
 
@@ -13,10 +14,12 @@ export interface FrameworkOption {
 export interface FrameworkSelectorProps {
   selectedIds?: string[];
   onSelect: (ids: string[]) => void;
-  onAddCustomFramework: () => void
+  /** Frameworks criados pelo utilizador; ficam guardados pela página. */
+  customFrameworks?: CustomFramework[];
+  onAddCustomFramework: (framework: CustomFramework) => void;
 }
 
-const INITIAL_FRAMEWORKS_DATA: FrameworkOption[] = [
+export const INITIAL_FRAMEWORKS_DATA: FrameworkOption[] = [
   {
     id: "1",
     name: "ISO 31000",
@@ -66,10 +69,12 @@ const INITIAL_FRAMEWORKS_DATA: FrameworkOption[] = [
 export default function FrameworkSelector({
   selectedIds = [],
   onSelect,
-
+  customFrameworks = [],
+  onAddCustomFramework,
 }: FrameworkSelectorProps) {
-  const [frameworks, setFrameworks] = useState<FrameworkOption[]>(
-    INITIAL_FRAMEWORKS_DATA,
+  const frameworks = useMemo<FrameworkOption[]>(
+    () => [...customFrameworks, ...INITIAL_FRAMEWORKS_DATA],
+    [customFrameworks],
   );
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,14 +93,13 @@ export default function FrameworkSelector({
     scope: string;
     file: File | null;
   }) => {
-    const newId = String(Date.now());
-    const newFramework: FrameworkOption = {
+    const newId = `custom-${Date.now()}`;
+
+    onAddCustomFramework({
       id: newId,
       name: data.name,
       description: data.scope,
-    };
-
-    setFrameworks((prev) => [newFramework, ...prev]);
+    });
     onSelect([...selectedIds, newId]);
   };
 

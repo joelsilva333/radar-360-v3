@@ -16,7 +16,7 @@ export interface OrganizationSelectorProps {
   onSelect: (ids: string[]) => void;
 }
 
-const JURISDICTIONS_DATA: JurisdictionOption[] = [
+export const JURISDICTIONS_DATA: JurisdictionOption[] = [
   // Europa
   { id: "pt", name: "Portugal", code: "PT", region: "EUROPA" },
   { id: "es", name: "Espanha", code: "PT", region: "EUROPA" },

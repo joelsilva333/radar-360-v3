@@ -1,8 +1,9 @@
 "use client";
 
+import { MatrixSize } from "@/core/types/setup";
 import { useState } from "react";
 
-export type MatrixSize = "3x3" | "4x4" | "5x5";
+export type { MatrixSize };
 
 interface MatrixOption {
   size: MatrixSize;
@@ -15,7 +16,10 @@ const MATRIX_OPTIONS: MatrixOption[] = [
   { size: "5x5", dimensions: 5 },
 ];
 
-const LABELS = {
+export const MATRIX_LABELS: Record<
+  MatrixSize,
+  { impact: string[]; probability: string[] }
+> = {
   "3x3": {
     impact: ["Baixa", "Media", "Alta"],
     probability: ["Alto", "Média", "Baixo"],
@@ -28,6 +32,20 @@ const LABELS = {
     impact: ["Muito Baixo", "Baixo", "Médio", "Alto", "Muito Alto"],
     probability: ["Muito Alto", "Alto", "Médio", "Alto", "Muito Baixo"],
   },
+};
+
+/*
+ * Cor de cada célula segundo o risco (probabilidade × impacto).
+ */
+export const getCellColor = (rowIndex: number, colIndex: number, total: number) => {
+  const probScore = (total - 1 - rowIndex) / (total - 1);
+  const impactScore = colIndex / (total - 1);
+  const riskScore = (probScore + impactScore) / 2;
+
+  if (riskScore < 0.25) return "bg-emerald-600";
+  if (riskScore < 0.6) return "bg-amber-500";
+  if (riskScore < 0.8) return "bg-yellow-400";
+  return "bg-red-600";
 };
 
 interface RiskAssessmentMatrixProps {
@@ -57,18 +75,8 @@ export default function RiskAssessmentMatrix({
   const currentOption =
     MATRIX_OPTIONS.find((opt) => opt.size === currentSize) || MATRIX_OPTIONS[0];
   const dim = currentOption.dimensions;
-  const labels = currentSize ? LABELS[currentSize] : LABELS["3x3"];
+  const labels = currentSize ? MATRIX_LABELS[currentSize] : MATRIX_LABELS["3x3"];
 
-  const getCellColor = (rowIndex: number, colIndex: number, total: number) => {
-    const probScore = (total - 1 - rowIndex) / (total - 1);
-    const impactScore = colIndex / (total - 1);
-    const riskScore = (probScore + impactScore) / 2;
-
-    if (riskScore < 0.25) return "bg-emerald-600";
-    if (riskScore < 0.6) return "bg-amber-500";
-    if (riskScore < 0.8) return "bg-yellow-400";
-    return "bg-red-600";
-  };
 
   return (
     <div className="w-full max-w-4xl p-6 bg-white rounded-lg font-sans text-slate-700 select-none">

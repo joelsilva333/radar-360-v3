@@ -8,6 +8,7 @@ import { Eye, EyeOff } from "lucide-react";
 import Loading from "@/app/ui/Loading";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface FormFields {
   email: string;
@@ -15,6 +16,7 @@ interface FormFields {
 }
 
 export default function Login() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -26,14 +28,13 @@ export default function Login() {
     mode: "onBlur",
   });
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
+  const onSubmit: SubmitHandler<FormFields> = async () => {
     setLoading(true);
 
-    console.log("Form data:", data);
+    // TODO: substituir pela autenticação real.
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 2000);
+    router.push("/dashboard");
   };
 
   return (

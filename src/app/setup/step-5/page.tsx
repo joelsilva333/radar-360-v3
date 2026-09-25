@@ -1,35 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import SetupLayout from "@/app/layouts/setup/SetupLayout";
-import RiskAssessmentMatrix, {
-  MatrixSize,
-} from "./components/RiskAssessmentMatrix";
+import { useSetupData } from "@/core/hooks/useSetupData";
+import { isSetupStepComplete, SETUP_STEP_PATHS } from "@/core/setup/steps";
+import { useRouter } from "next/navigation";
+import RiskAssessmentMatrix from "./components/RiskAssessmentMatrix";
 
 export default function SetupPage() {
   const router = useRouter();
-  const [selectedMatrix, setSelectedMatrix] = useState<MatrixSize | null>(
-    "3x3",
-  );
 
-  const handleNext = () => {
-    if (!selectedMatrix) return;
-
-    console.log("Matriz selecionada:", selectedMatrix);
-    router.push("/setup/final-step");
-  };
+  const [setupData, updateSetup] = useSetupData();
 
   return (
     <SetupLayout
       currentStep={5}
-      onNextClick={handleNext}
-      isNextDisabled={!selectedMatrix}
+      onNextClick={() => router.push(SETUP_STEP_PATHS[6])}
+      isNextDisabled={!isSetupStepComplete(5, setupData)}
       nextLabel="Continuar"
-      missingMessage="Selecione uma opção de taxonomia antes de continuar.">
+      missingMessage="Selecione o tamanho da matriz antes de continuar.">
       <RiskAssessmentMatrix
-        value={selectedMatrix}
-        onChange={setSelectedMatrix}
+        value={setupData.matrix ?? null}
+        onChange={(matrix) => updateSetup({ matrix })}
       />
     </SetupLayout>
   );

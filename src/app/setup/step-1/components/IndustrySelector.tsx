@@ -10,7 +10,7 @@ export interface IndustryOption {
   category: string;
 }
 
-const INDUSTRIES_DATA: IndustryOption[] = [
+export const INDUSTRIES_DATA: IndustryOption[] = [
   {
     id: "1",
     name: "Alimentar e Bebidas",

@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 export interface TaxonomyOption {
   id: string;
   title: string;
@@ -9,11 +7,12 @@ export interface TaxonomyOption {
 }
 
 export interface RiskTaxonomySelectorProps {
-  defaultValue?: string;
+  /** Opção escolhida; `null`/`undefined` enquanto nada foi escolhido. */
+  value?: string | null;
   onChange?: (selectedId: string) => void;
 }
 
-const TAXONOMY_OPTIONS: TaxonomyOption[] = [
+export const TAXONOMY_OPTIONS: TaxonomyOption[] = [
   {
     id: "sim",
     title: "Sim",
@@ -35,16 +34,13 @@ const TAXONOMY_OPTIONS: TaxonomyOption[] = [
 ];
 
 export default function RiskTaxonomySelector({
-  defaultValue = "sim",
+  value,
   onChange,
 }: RiskTaxonomySelectorProps) {
-  const [selectedId, setSelectedId] = useState<string>(defaultValue);
+  const selectedId = value ?? null;
 
   const handleSelect = (id: string) => {
-    setSelectedId(id);
-    if (onChange) {
-      onChange(id);
-    }
+    onChange?.(id);
   };
 
   return (

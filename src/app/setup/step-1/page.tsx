@@ -1,28 +1,26 @@
 "use client";
 
 import SetupLayout from "@/app/layouts/setup/SetupLayout";
-import { useState } from "react";
+import { useSetupData } from "@/core/hooks/useSetupData";
+import { isSetupStepComplete, SETUP_STEP_PATHS } from "@/core/setup/steps";
+import { useRouter } from "next/navigation";
 import IndustrySelector from "./components/IndustrySelector";
 
 export default function SetupPage() {
-  const [selectedIndustryId, setSelectedIndustryId] = useState<string | null>(
-    null,
-  );
+  const router = useRouter();
 
-  const handleNext = () => {
-    console.log("Indústria selecionada ID:", selectedIndustryId);
-  };
+  const [setupData, updateSetup] = useSetupData();
 
   return (
     <SetupLayout
       currentStep={1}
-      onNextClick={handleNext}
-      isNextDisabled={!selectedIndustryId}
+      onNextClick={() => router.push(SETUP_STEP_PATHS[2])}
+      isNextDisabled={!isSetupStepComplete(1, setupData)}
       nextLabel="Continuar"
       missingMessage="Selecione uma indústria principal antes de continuar.">
       <IndustrySelector
-        selectedId={selectedIndustryId}
-        onSelect={(id) => setSelectedIndustryId(id)}
+        selectedId={setupData.industryId ?? null}
+        onSelect={(industryId) => updateSetup({ industryId })}
       />
     </SetupLayout>
   );

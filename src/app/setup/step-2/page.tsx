@@ -1,28 +1,26 @@
 "use client";
 
 import SetupLayout from "@/app/layouts/setup/SetupLayout";
-import { useState } from "react";
-import OrganizationSelector from "../step-2/components/OrganizationSelector";
+import { useSetupData } from "@/core/hooks/useSetupData";
+import { isSetupStepComplete, SETUP_STEP_PATHS } from "@/core/setup/steps";
+import { useRouter } from "next/navigation";
+import OrganizationSelector from "./components/OrganizationSelector";
 
 export default function SetupPage() {
-  const [selectedJurisdictionIds, setSelectedJurisdictionIds] = useState<
-    string[]
-  >([]);
+  const router = useRouter();
 
-  const handleNext = () => {
-    console.log("Jurisdições selecionadas IDs:", selectedJurisdictionIds);
-  };
+  const [setupData, updateSetup] = useSetupData();
 
   return (
     <SetupLayout
       currentStep={2}
-      onNextClick={handleNext}
-      isNextDisabled={selectedJurisdictionIds.length === 0}
+      onNextClick={() => router.push(SETUP_STEP_PATHS[3])}
+      isNextDisabled={!isSetupStepComplete(2, setupData)}
       nextLabel="Continuar"
       missingMessage="Selecione pelo menos uma jurisdição antes de continuar.">
       <OrganizationSelector
-        selectedIds={selectedJurisdictionIds}
-        onSelect={(ids) => setSelectedJurisdictionIds(ids)}
+        selectedIds={setupData.jurisdictionIds ?? []}
+        onSelect={(jurisdictionIds) => updateSetup({ jurisdictionIds })}
       />
     </SetupLayout>
   );
